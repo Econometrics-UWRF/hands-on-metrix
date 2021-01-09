@@ -13,8 +13,6 @@ output:
     toc_depth: 3
     number_sections: false
     code_download: false
-    split_by: "section"
-bibliography: references.bib
 link-citations: true
 ---
 

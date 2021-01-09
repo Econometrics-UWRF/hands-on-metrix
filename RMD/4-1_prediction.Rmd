@@ -1,7 +1,4 @@
 ---
-title: "Simple Linear Regression"
-author: "[Logan Kelly](https://github.com/Econometrics-UWRF)"
-date: "Last updated: `r format(Sys.time(), '%B %Y')`"
 output:
   html_document:
     css: style.css
@@ -10,19 +7,39 @@ output:
     toc_float:
       collapsed: true
       smooth_scroll: true
-    toc_depth: 3
+    toc_depth: 2
     number_sections: false
     code_download: false
 link-citations: true
 ---
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE, comment = "", out.width="90%",fig.asp=.56, fig.align = "center", message=FALSE)
 ```
 
 ```{r echo=F,message=F,warning=F,results='hide'}
+
 if (!require("tidyverse")) install.packages("tidyverse")
   suppressMessages(library(tidyverse))
+  
+if (!require("PoEdata")) install.packages("PoEdata")
+  suppressMessages(library(PoEdata))
 
+if (!require("xtable")) install.packages("xtable")
+  suppressMessages(library(xtable))  
+  
+if (!require("printr")) install.packages("printr")
+  suppressMessages(library(printr))
+  
+if (!require("stargazer")) install.packages("stargazer")
+  suppressMessages(library(stargazer))
+  
+if (!require("DT")) install.packages("DT")
+  suppressMessages(library(DT)) 
+  
+if (!require("xfun")) install.packages("xfun")
+  suppressMessages(library(xfun))   
+  
 if (!require("psych")) install.packages("psych")
   suppressMessages(library(psych))
 
@@ -43,13 +60,55 @@ if (!require("tutorial")) install.packages("tutorial")
 
 if (!require("testwhat")) install_github("datacamp/testwhat")
   suppressMessages(library(testwhat))
-```
 
-```{r, include=FALSE}
+if (!require("praise")) install_github("gaborcsardi/praise")
+  suppressMessages(library(praise))  
+  
 tutorial::go_interactive(greedy = F, height = 400)
+
+# Functions 
+predict.prob <- function(lmod,
+                      new.data,
+                      alpha=0.05,
+                      alternative="greater",
+                      value)
+  {
+    prediction <- predict(lmod, 
+                          newdata = new.data,
+                          interval="predict",
+                          level =1-alpha,
+                          se.fit = T)
+    cv <- qt(p=alpha/2, df = prediction$df, lower.tail = FALSE)
+    se <- (prediction$fit[,"upr"] - prediction$fit[,"fit"])/cv
+    t.stat <- (value-prediction$fit[,"fit"])/se
+    ret = data.frame("value"=value,
+                     "prob"=pt(q=t.stat,
+                            df=prediction$df,
+                            lower.tail = (alternative=="less")),
+                     "alternative"=alternative,
+                     "fit"=prediction$fit[,"fit"],
+                     "upr"=prediction$fit[,"upr"],
+                     "lwr"=prediction$fit[,"lwr"],
+                     "df" = prediction$df,
+                     "cv" = cv,
+                     "se" = se,
+                     "t.stat" = t.stat
+                     )
+    return(ret)
+  }
+
+predict.plot <- function(prediction){
+  x=seq(-4,4,length=400)
+  y=dt(x, df=prediction$df)
+  t = ifelse((prediction$alternative=="less"),-1,1)  
+  x1=seq(t*4,prediction$t.stat,length=400)
+  y1=dt(x1, df=prediction$df)
+  plot(x,y,type="l", lwd=2, col="black")
+  polygon(c(4,prediction$t.stat,x1),c(0,y1,0),col="gray")
+  abline(v=0)
+}
+
 ```
-
-
 
 <script>var element =  $("div[class="book"]");element.classList.remove("with-summary");</script>
 
@@ -75,7 +134,9 @@ food <- read.csv(url("http://tiny.cc/poe-data/food.csv"))
 
 `food` is a special object called a data frame. You can think of a data frame as one page of an workbook from a spreadsheet program.
 
+::: {.info-box .note}
 We need to use the `url()` function because we are accessing the data file from the internet. If you access data locally, you do not need the `url()` function.
+:::
 
 ## You try
 
@@ -91,7 +152,9 @@ food <- read.csv(url("http://tiny.cc/poe-data/food.csv"))
 
 ```{r tut=T, ex="LoadDataEX", type="sct"}
 test_object(c("food"))
-success_msg("Great!")
+success_msg(praise("${Exclamation}! Yor did a ${adjective} job!"))
+
+
 ```
 
 # Estimate a linear model {.tabset .fixed-height}
@@ -130,7 +193,7 @@ summary(mod1)
 
 ```{r tut=T, ex="EstEX", type="sct"}
 test_object(c("mod1"))
-success_msg("Great!")
+success_msg(praise("${Exclamation}! Yor did a ${adjective} job!"))
 ```
 
 # Plot the model {.tabset .fixed-height}
@@ -152,6 +215,9 @@ plot(food$income, food$food_exp,
 abline(b1,b2)
 ```
 
+::: {.info-box .warning}
+Notice that the scatter plot indicates a non-linear relationship between food expenditure and income. Thus, the linear model we have estimated is likely inappropriate. We will estimate a better model in a later lesson.
+:::
 
 ## You try
 
@@ -179,8 +245,10 @@ abline(b1,b2)
 ```
 
 ```{r tut=T, ex="PlotEX", type="sct"}
-test_object(c("b1","b2"))
-success_msg("Great!")
+test_object(c("b1"))
+success_msg(praise("${Exclamation}! Yor did a ${adjective} job!"))
+test_object(c("b2"))
+success_msg(praise("${Exclamation}! Yor did a ${adjective} job!"))
 ```
 
 # Prediction {.tabset .fixed-height}
@@ -236,8 +304,274 @@ pi
 ```
 
 ```{r tut=T, ex="PredEX", type="sct"}
-test_object(c("ci","pi"))
+test_object(c("ci"))
 success_msg("Great!")
+test_object(c("pi"))
+success_msg(praise("${Exclamation}! Yor did a ${adjective} job!"))
+```
+
+# Prediction Probability {.tabset .fixed-height}
+
+## Lecture
+
+## Explanition
+
+It can be quite useful to determine the probability of a range of events rather than a single value. For example, we might want to predict the probability that a household with an income of 20 will spend at least $200 dollars per week on food. 
+
+::: {.info-box .warning}
+This sections gets a bit technical, but I will provide you with a function that you can cut and past into your analysis that makes answering questions like the one above much easier.
+:::
+
+### Some theory
+
+The estimate of $y$, i.e. $\hat{y}$, is a random variable with a student's t distribution. So we can use `pt()` to estimate the probably of an actual realization of $y$ being within a given range.
+
+We first need to calculate a $t-stat$ for a value that is either the max or min of the given range. This $t-stat$ can be found with the equation below.
+
+::: {#eq1} 
+:::
+
+\[
+t-stat = \frac{value - \hat{y}}{ standard\ error\ of\ prediction }
+\]
+
+Unfortunately, R dose not provide an easy way to access the standard error of prediction. So I have written two functions `predict.prob ()` and `predict.plot ()` to make this procedure easier. Those two function are included in the next tab. You do not need to worry about understanding the function. You can simply cut and past the functions into you own projects.
+
+### Calculate the probibility
+
+Here we will predict the probability that a household with an income of 20 will spend at least $200 dollars per week on food. Recall that we estimate a model of food expenditure called `mod1`.
+
+First we will use `predict.prob()` to find both the probability of food expenditure being greater than $200 and the actual prediction of food expenditure.
+
+```{r echo=TRUE}
+mod1.prod <- predict.prob(mod1,
+              new.data = data.frame("income"=20),
+              alpha = 0.05,
+              alternative <- "greater",
+              value <- 200)
+
+kable(mod1.prod, digits = 3, align = "l")
+```
+
+Next, you can use `predict.prob()` to visualize the probability we just estimated. The horizontal axis is measured in the same scale as the $t-score$, thus the zero coresponds to the predicted value of $y$, and the shading corresponds to the 
+
+```{r echo=TRUE}
+predict.plot(mod1.prod)
+```
+
+## Prediction Functions
+
+### predict.prob ()
+
+```{r echo = T, eval=F, tut=F}
+predict.prob <- function(lmod,
+                      new.data,
+                      alpha=0.05,
+                      alternative="greater",
+                      value)
+  {
+    prediction <- predict(lmod, 
+                          newdata = new.data,
+                          interval="predict",
+                          level =1-alpha,
+                          se.fit = T)
+    cv <- qt(p=alpha/2, df = prediction$df, lower.tail = FALSE)
+    se <- (prediction$fit[,"upr"] - prediction$fit[,"fit"])/cv
+    t.stat <- (value-prediction$fit[,"fit"])/se
+    ret = data.frame("value"=value,
+                     "prob"=pt(q=t.stat,
+                            df=prediction$df,
+                            lower.tail = (alternative=="less")),
+                     "alternative"=alternative,
+                     "fit"=prediction$fit[,"fit"],
+                     "upr"=prediction$fit[,"upr"],
+                     "lwr"=prediction$fit[,"lwr"],
+                     "df" = prediction$df,
+                     "cv" = cv,
+                     "se" = se,
+                     "t.stat" = t.stat
+                     )
+    return(ret)
+  }
+```
+
+### predict.plot()
+
+```{r echo = T, eval=F, tut=F}
+predict.plot <- function(prediction){
+  x=seq(-4,4,length=400)
+  y=dt(x, df=prediction$df)
+  t = ifelse((prediction$alternative=="less"),-1,1)  
+  x1=seq(t*4,prediction$t.stat,length=400)
+  y1=dt(x1, df=prediction$df)
+  plot(x,y,type="l", lwd=2, col="black")
+  polygon(c(4,prediction$t.stat,x1),c(0,y1,0),col="gray")
+  abline(v=0)
+}
 ```
 
 
+## You try
+
+Instructions here
+
+```{r tut=T, ex="ProbEX", type="pre-exercise-code"}
+library(knitr)
+predict.prob <- function(lmod,
+                      new.data,
+                      alpha=0.05,
+                      alternative="greater",
+                      value)
+  {
+    prediction <- predict(lmod, 
+                          newdata = new.data,
+                          interval="predict",
+                          level =1-alpha,
+                          se.fit = T)
+    cv <- qt(p=alpha/2, df = prediction$df, lower.tail = FALSE)
+    se <- (prediction$fit[,"upr"] - prediction$fit[,"fit"])/cv
+    t.stat <- (value-prediction$fit[,"fit"])/se
+    ret = data.frame("value"=value,
+                     "prob"=pt(q=t.stat,
+                            df=prediction$df,
+                            lower.tail = (alternative=="less")),
+                     "alternative"=alternative,
+                     "fit"=prediction$fit[,"fit"],
+                     "upr"=prediction$fit[,"upr"],
+                     "lwr"=prediction$fit[,"lwr"],
+                     "df" = prediction$df,
+                     "cv" = cv,
+                     "se" = se,
+                     "t.stat" = t.stat
+                     )
+    return(ret)
+  }
+
+predict.plot <- function(prediction){
+  x=seq(-4,4,length=400)
+  y=dt(x, df=prediction$df)
+  t = ifelse((prediction$alternative=="less"),-1,1)  
+  x1=seq(t*4,prediction$t.stat,length=400)
+  y1=dt(x1, df=prediction$df)
+  plot(x,y,type="l", lwd=2, col="black")
+  polygon(c(4,prediction$t.stat,x1),c(0,y1,0),col="gray")
+  abline(v=0)
+}
+
+
+food <- read.csv(url("http://tiny.cc/poe-data/food.csv"))
+mod1 <- lm(food_exp ~ income, data = food)
+```
+
+```{r tut=T, ex="ProbEX", type="sample-code"}
+# Predict probability of food expenditure being at least $150 for a household with income level of 15
+
+```
+
+```{r tut=T, ex="ProbEX", type="solution"}
+mod1.prod <- predict.prob(mod1,
+              new.data = data.frame("income"=15),
+              alpha = 0.05,
+              alternative <- "greater",
+              value <- 150)
+
+mod1.prod$prob
+
+predict.plot(mod1.prod)
+```
+
+```{r tut=T, ex="ProbEX", type="sct"}
+test_object("mod1.prod")
+success_msg(praise("${Exclamation}! Yor did a ${adjective} job!"))
+```
+
+# Summary of all code
+
+```{r echo = T, eval=F, tut=F}
+
+# Packages 
+library(knitr)
+
+# Functions 
+predict.prob <- function(lmod,
+                      new.data,
+                      alpha=0.05,
+                      alternative="greater",
+                      value)
+  {
+    prediction <- predict(lmod, 
+                          newdata = new.data,
+                          interval="predict",
+                          level =1-alpha,
+                          se.fit = T)
+    cv <- qt(p=alpha/2, df = prediction$df, lower.tail = FALSE)
+    se <- (prediction$fit[,"upr"] - prediction$fit[,"fit"])/cv
+    t.stat <- (value-prediction$fit[,"fit"])/se
+    ret = data.frame("value"=value,
+                     "prob"=pt(q=t.stat,
+                            df=prediction$df,
+                            lower.tail = (alternative=="less")),
+                     "alternative"=alternative,
+                     "fit"=prediction$fit[,"fit"],
+                     "upr"=prediction$fit[,"upr"],
+                     "lwr"=prediction$fit[,"lwr"],
+                     "df" = prediction$df,
+                     "cv" = cv,
+                     "se" = se,
+                     "t.stat" = t.stat
+                     )
+    return(ret)
+  }
+
+predict.plot <- function(prediction){
+  x=seq(-4,4,length=400)
+  y=dt(x, df=prediction$df)
+  t = ifelse((prediction$alternative=="less"),-1,1)  
+  x1=seq(t*4,prediction$t.stat,length=400)
+  y1=dt(x1, df=prediction$df)
+  plot(x,y,type="l", lwd=2, col="black")
+  polygon(c(4,prediction$t.stat,x1),c(0,y1,0),col="gray")
+  abline(v=0)
+}
+
+# Code
+
+## Load Data
+food <- read.csv(url("http://tiny.cc/poe-data/food.csv"))
+
+## Estimate Model
+mod1 <- lm(food_exp ~ income, data = food)
+summary(mod1)
+
+## Plot Model
+b1 <- coef(mod1)[[1]]
+b2 <- coef(mod1)[[2]]
+plot(food$income, food$food_exp, 
+     xlab="weekly income in $100", 
+     ylab="weekly food expenditure in $", 
+     type = "p")
+abline(b1,b2)
+
+# Make Predictions with the Model
+new.data <- data.frame("income" = 20)
+predict(mod1, newdata=new.data, interval="confidence", level=0.95)
+predict(mod1, newdata=new.data, interval="predict", level=0.95)
+
+# Make Probability Predictions
+mod1.prod <- predict.prob(mod1,
+              new.data = data.frame("income"=20),
+              alpha = 0.05,
+              alternative <- "greater",
+              value <- 200)
+
+kable(mod1.prod, digits = 3, align = "l")
+
+# Plot Probability Predictions
+predict.plot(mod1.prod)
+```
+
+# You did it!
+
+In the next tutorial, we will learn about accessing Goodness-of-Fit. The next lesson is available here: https://logan-kelly.shinyapps.io/4-2_GoF/
+
+![](img/great-job-star-drawing.jpeg){width="75%"}
