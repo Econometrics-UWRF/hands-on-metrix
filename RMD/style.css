@@ -12,6 +12,10 @@ h1,h2,h3,h4,h5 {
   text-align: left;
 }
 
+.fixed-box {
+  min-height: 800px;  
+}
+
 .blue-box {
   background-color: #e6f0ff;
   border-radius: 5px;
@@ -62,5 +66,5 @@ h1,h2,h3,h4,h5 {
 }
 
 .fixed-height .tab-content {
-  min-height: 650px;
+  min-height: 800px;
 }

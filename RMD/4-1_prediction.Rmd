@@ -1,15 +1,15 @@
 ---
 output:
-  html_document:
+  html_document: 
     css: style.css
     theme: spacelab
-    toc: true
+    toc: yes
     toc_float:
-      collapsed: true
-      smooth_scroll: true
+      collapsed: yes
+      smooth_scroll: yes
     toc_depth: 2
-    number_sections: false
-    code_download: false
+    code_download: no
+    highlight: tango
 link-citations: true
 ---
 ```{r setup, include=FALSE}
@@ -112,9 +112,10 @@ predict.plot <- function(prediction){
 
 <script>var element =  $("div[class="book"]");element.classList.remove("with-summary");</script>
 
-# Introduction {.tabset}
+# Introduction {.fixed-box}
 
 In this tutorial, we will estimate a simple linear regression, make a scatter plot of the data that includes the regression line, and calculate a predicted value for the dependent variable.
+
 
 # Importing data into R {.tabset .fixed-height}
 
@@ -152,7 +153,7 @@ food <- read.csv(url("http://tiny.cc/poe-data/food.csv"))
 
 ```{r tut=T, ex="LoadDataEX", type="sct"}
 test_object(c("food"))
-success_msg(praise("${Exclamation}! Yor did a ${adjective} job!"))
+success_msg(praise("${Exclamation}! You did a ${adjective} job!"))
 
 
 ```
@@ -193,7 +194,7 @@ summary(mod1)
 
 ```{r tut=T, ex="EstEX", type="sct"}
 test_object(c("mod1"))
-success_msg(praise("${Exclamation}! Yor did a ${adjective} job!"))
+success_msg(praise("${Exclamation}! You did a ${adjective} job!"))
 ```
 
 # Plot the model {.tabset .fixed-height}
@@ -246,9 +247,9 @@ abline(b1,b2)
 
 ```{r tut=T, ex="PlotEX", type="sct"}
 test_object(c("b1"))
-success_msg(praise("${Exclamation}! Yor did a ${adjective} job!"))
+success_msg(praise("${Exclamation}! You did a ${adjective} job!"))
 test_object(c("b2"))
-success_msg(praise("${Exclamation}! Yor did a ${adjective} job!"))
+success_msg(praise("${Exclamation}! You did a ${adjective} job!"))
 ```
 
 # Prediction {.tabset .fixed-height}
@@ -307,7 +308,7 @@ pi
 test_object(c("ci"))
 success_msg("Great!")
 test_object(c("pi"))
-success_msg(praise("${Exclamation}! Yor did a ${adjective} job!"))
+success_msg(praise("${Exclamation}! You did a ${adjective} job!"))
 ```
 
 # Prediction Probability {.tabset .fixed-height}
@@ -482,7 +483,7 @@ predict.plot(mod1.prod)
 
 ```{r tut=T, ex="ProbEX", type="sct"}
 test_object("mod1.prod")
-success_msg(praise("${Exclamation}! Yor did a ${adjective} job!"))
+success_msg(praise("${Exclamation}! You did a ${adjective} job!"))
 ```
 
 # Summary of all code
@@ -570,7 +571,7 @@ kable(mod1.prod, digits = 3, align = "l")
 predict.plot(mod1.prod)
 ```
 
-# You did it!
+# You did it!{.fixed-box}
 
 In the next tutorial, we will learn about accessing Goodness-of-Fit. The next lesson is available here: https://logan-kelly.shinyapps.io/4-2_GoF/
 

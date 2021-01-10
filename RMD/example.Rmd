@@ -50,7 +50,7 @@ DT::datatable(mtcars, options = list(pageLength = 3))
 > Suspendisse potenti
 
 We can have math formulas inline like this: $E=mc^2$ or make them span an entire line like this:
-
+The equation bleow
 ::: {#eq1} 
 :::
 
