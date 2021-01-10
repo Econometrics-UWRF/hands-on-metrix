@@ -1,0 +1,2 @@
+output_dir: "docs"
+site: rmarkdown::default_site
