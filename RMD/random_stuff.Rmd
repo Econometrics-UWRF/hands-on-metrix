@@ -1,0 +1,33 @@
+---
+title: "random_stuff"
+author: "Logan Kelly, Ph.D."
+date: "1/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# `jtools` `summ()` Will not work in data camp. add for shiny
+
+Let's use a package called `jtools` to display the summary of the model. `jtools` has a function call `summ()` that is a bit nicer than `summary()`. We need to load the package using the `library()` function. I like to use the following code to load packages
+
+```{r echo=T, eval=F}
+if (!require("jtools")) install.packages("jtools")
+  suppressMessages(library(jtools))
+```
+
+This first line tests id the package has been installed, if it has not, then R installs the package. the next line quietly loads the package. So the following code loads `jtools` and summarizes the model.
+
+```{r, echo=T,eval=T}
+if (!require("jtools")) install.packages("jtools")
+  suppressMessages(library(jtools))
+  
+jtools::summ(mod1)
+```
+
+::: {.info-box .warning}
+Note that the `summ()` function has two m's. This is to differentiated from a function that adds numbers up! 
+:::
