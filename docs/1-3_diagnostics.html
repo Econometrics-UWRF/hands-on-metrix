@@ -11,7 +11,7 @@
 
 
 
-<title>Residuals diagnostics</title>
+<title>Residuals Diagnostics</title>
 
 <script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -338,7 +338,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Residuals diagnostics</h1>
+<h1 class="title toc-ignore">Residuals Diagnostics</h1>
 
 </div>
 
@@ -364,7 +364,7 @@ script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
 <script>var element =  $("div[class="book"]");element.classList.remove("with-summary");</script>
 <div id="introduction" class="section level1 fixed-box">
 <h1 class="fixed-box">Introduction</h1>
-<p>In this tutorial, we will assess Goodness-of-Fit via the coefficient of determination.</p>
+<p>In this tutorial, we will evaluate basic residual diagnostics of a model.</p>
 <div id="load-data-and-estimate-model" class="section level3">
 <h3>Load data and estimate model</h3>
 <p>For this tutorial, we will be using the <code>food</code> data from PoE that can be found at <a href="http://www.principlesofeconometrics.com/poe5/poe5data.html" class="uri">http://www.principlesofeconometrics.com/poe5/poe5data.html</a>. To make it easier to access this data, I have set up a shortened URL: <a href="http://tiny.cc/poe" class="uri">http://tiny.cc/poe</a> -data. Thus, to load <code>food.csv</code> into R, use the following URL: <a href="http://tiny.cc/poe-data/food.csv" class="uri">http://tiny.cc/poe-data/food.csv</a>. We use the following code to load the data and estimate the model we will use in this tutorial.</p>
@@ -372,156 +372,133 @@ script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>mod1 &lt;-<span class="st"> </span><span class="kw">lm</span>(food_exp <span class="op">~</span><span class="st"> </span>income, <span class="dt">data =</span> food)</span></code></pre></div>
 </div>
 </div>
-<div id="all-about-r2" class="section level1 tabset fixed-height">
-<h1 class="tabset fixed-height">All about <span class="math inline">\(R^2\)</span></h1>
+<div id="fitted-and-residual-values" class="section level1 tabset fixed-height">
+<h1 class="tabset fixed-height">Fitted and residual values</h1>
 <div id="lecture" class="section level2">
 <h2>Lecture</h2>
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/qPk0YEKhqB8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
 </div>
 <div id="explanition" class="section level2">
 <h2>Explanition</h2>
-<p>The coefficient of determination, <span class="math inline">\(R^2\)</span>, is defined as the proportion of the variance in <span class="math inline">\(y\)</span> that is explained by the regression and the total variation in <span class="math inline">\(y\)</span>. <span class="math inline">\(R^2\)</span> is displayed in the model summary and is labeled “Multiple R-squared” (see bellow).</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="kw">summary</span>(mod1)</span></code></pre></div>
-<pre><code>
-Call:
-lm(formula = food_exp ~ income, data = food)
-
-Residuals:
-     Min       1Q   Median       3Q      Max 
--223.025  -50.816   -6.324   67.879  212.044 
-
-Coefficients:
-            Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)   83.416     43.410   1.922   0.0622 .  
-income        10.210      2.093   4.877 1.95e-05 ***
----
-Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-
-Residual standard error: 89.52 on 38 degrees of freedom
-Multiple R-squared:  0.385, Adjusted R-squared:  0.3688 
-F-statistic: 23.79 on 1 and 38 DF,  p-value: 1.946e-05</code></pre>
+<p>After estimating a model, the fitted values and the residuals can be accessed via the <code>$</code>. The model object contains several components. In R, the components within an object can be accessed by appending a dollar sign, <code>$</code>, and the name of the component. Thus the following code stores fitted values, i.e. <span class="math inline">\(\hat{y}\)</span>, and the residues, <span class="math inline">\(e\)</span>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>fitted &lt;-<span class="st"> </span>mod1<span class="op">$</span>fitted.values</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>resid &lt;-<span class="st"> </span>mod1<span class="op">$</span>residuals</span></code></pre></div>
+<div id="actual-vs-fitted-plot" class="section level3">
+<h3>Actual vs Fitted Plot</h3>
+<p>Now, lets plot the actual vs fitted values of the dependent variable.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="kw">plot</span>(<span class="dt">x=</span>food<span class="op">$</span>food_exp,<span class="dt">y=</span>mod1<span class="op">$</span>fitted.values)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="kw">abline</span>(<span class="dv">0</span>,<span class="dv">1</span>)</span></code></pre></div>
+<p><img src="1-3_diagnostics_files/figure-html/unnamed-chunk-4-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>In this plot, the closer each point is to the solid line, the closer <span class="math inline">\(\hat{y}\)</span> is to <span class="math inline">\(y\)</span>. The above figure suggests a non-linear relationship, but more on that in the next tutorial.</p>
+</div>
+<div id="perfect-fitted-and-residual-values" class="section level3">
+<h3>“Perfect” fitted and residual values</h3>
+<p>Here is an example of a actual vs fitted plot that is nearly optimal. The data has been simulated to meet all the assumptions of linear regression.</p>
+<p><img src="1-3_diagnostics_files/figure-html/unnamed-chunk-5-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>Note that the points form an even band above and below the <span class="math inline">\(\hat{y}=y\)</span> line.</p>
+</div>
 </div>
 <div id="you-try" class="section level2">
 <h2>You try</h2>
-<p>Regress <code>food_exp</code> on <code>income</code> and store the model in a object named <code>mod1</code>. Then use the summary function to determine <span class="math inline">\(R^2\)</span>.</p>
+<p>Instructions</p>
 <div data-datacamp-exercise="" data-height="400" data-encoded="true">
-eyJsYW5ndWFnZSI6InIiLCJzYW1wbGUiOiIjIGxvYWQgZGF0YSBpbnRvIGFuIG9iamVjdCBjYWxsZWQgZm9vZFxuXG5cbiMgUmVncmVzcyBgZm9vZF9leHBgIG9uIGBpbmNvbWVgIGFuZCBzdG9yZSB0aGUgbW9kZWwgaW4gYSBvYmplY3QgbmFtZWQgYG1vZDFgXG5cblxuIyBkaXNwbGF5IGEgc3VtbWFyeSBvZiB0aGUgbW9kZWwiLCJzb2x1dGlvbiI6IiMgbG9hZCBkYXRhIGludG8gYW4gb2JqZWN0IGNhbGxlZCBmb29kXG5mb29kIDwtIHJlYWQuY3N2KHVybChcImh0dHA6Ly90aW55LmNjL3BvZS1kYXRhL2Zvb2QuY3N2XCIpKVxuXG4jIFJlZ3Jlc3MgYGZvb2RfZXhwYCBvbiBgaW5jb21lYCBhbmQgc3RvcmUgdGhlIG1vZGVsIGluIGEgb2JqZWN0IG5hbWVkIGBtb2QxYFxubW9kMSA8LSBsbShmb29kX2V4cCB+IGluY29tZSwgZGF0YSA9IGZvb2QpXG5cbiMgZGlzcGxheSBhIHN1bW1hcnkgb2YgdGhlIG1vZGVsXG5zdW1tYXJ5KG1vZDEpIiwic2N0IjoiZXgoKSAlPiUgY2hlY2tfb3V0cHV0X2V4cHIoXCJzdW1tYXJ5KG1vZDEpXCIpXG5zdWNjZXNzX21zZyhwcmFpc2UoXCIke0V4Y2xhbWF0aW9ufSEgWW91IGRpZCBhICR7YWRqZWN0aXZlfSBqb2IhXCIpKSJ9
+eyJsYW5ndWFnZSI6InIiLCJwcmVfZXhlcmNpc2VfY29kZSI6ImZvb2QgPC0gcmVhZC5jc3YodXJsKFwiaHR0cDovL3RpbnkuY2MvcG9lLWRhdGEvZm9vZC5jc3ZcIikpXG5tb2QxIDwtIGxtKGZvb2RfZXhwIH4gaW5jb21lLCBkYXRhID0gZm9vZCkiLCJzYW1wbGUiOiIjICIsInNvbHV0aW9uIjoicGxvdCh4PWZvb2QkZm9vZF9leHAseT1tb2QxJGZpdHRlZC52YWx1ZXMpXG5hYmxpbmUoMCwxKSJ9
 </div>
 </div>
 </div>
-<div id="warning-about-r2" class="section level1 tabset fixed-height">
-<h1 class="tabset fixed-height">Warning about <span class="math inline">\(R^2\)</span></h1>
+<div id="residuals-vs.-fit-plot" class="section level1 tabset fixed-height">
+<h1 class="tabset fixed-height">Residuals vs. Fit Plot</h1>
 <div id="lecture-1" class="section level2">
 <h2>Lecture</h2>
 </div>
 <div id="explanition-1" class="section level2">
 <h2>Explanition</h2>
-<p><span class="math inline">\(R^2\)</span> is neither the only measure of goodness-of-fit nor is it a sufficient measure. It is a usefully statistic, but it has it limitations. One of those limitations is that <span class="math inline">\(R^2\)</span> is increasing in the number of parameters in the model. So if you add an independent variable, <span class="math inline">\(R^2\)</span> will go up. Adjusted <span class="math inline">\(R^2\)</span> attempts to fix this by adding a penalty for adding lees statistical significant independent variables. As a result, adjusted <span class="math inline">\(R^2\)</span> is not a measure of goodness-of-fit, but rather a model selection criteria, but it is not a very good one.</p>
-<p>Moreover, <span class="math inline">\(R^2\)</span> is not a substitute for plotting the data as was shown a statistion named</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="kw">data</span>(<span class="st">&quot;anscombe&quot;</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="kw">describe</span>(anscombe, <span class="dt">skew =</span> F,<span class="dt">ranges =</span> F)</span></code></pre></div>
-<table>
-<thead>
-<tr class="header">
-<th align="left"></th>
-<th align="right">vars</th>
-<th align="right">n</th>
-<th align="right">mean</th>
-<th align="right">sd</th>
-<th align="right">se</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">x1</td>
-<td align="right">1</td>
-<td align="right">11</td>
-<td align="right">9.000000</td>
-<td align="right">3.316625</td>
-<td align="right">1.0000000</td>
-</tr>
-<tr class="even">
-<td align="left">x2</td>
-<td align="right">2</td>
-<td align="right">11</td>
-<td align="right">9.000000</td>
-<td align="right">3.316625</td>
-<td align="right">1.0000000</td>
-</tr>
-<tr class="odd">
-<td align="left">x3</td>
-<td align="right">3</td>
-<td align="right">11</td>
-<td align="right">9.000000</td>
-<td align="right">3.316625</td>
-<td align="right">1.0000000</td>
-</tr>
-<tr class="even">
-<td align="left">x4</td>
-<td align="right">4</td>
-<td align="right">11</td>
-<td align="right">9.000000</td>
-<td align="right">3.316625</td>
-<td align="right">1.0000000</td>
-</tr>
-<tr class="odd">
-<td align="left">y1</td>
-<td align="right">5</td>
-<td align="right">11</td>
-<td align="right">7.500909</td>
-<td align="right">2.031568</td>
-<td align="right">0.6125408</td>
-</tr>
-<tr class="even">
-<td align="left">y2</td>
-<td align="right">6</td>
-<td align="right">11</td>
-<td align="right">7.500909</td>
-<td align="right">2.031657</td>
-<td align="right">0.6125676</td>
-</tr>
-<tr class="odd">
-<td align="left">y3</td>
-<td align="right">7</td>
-<td align="right">11</td>
-<td align="right">7.500000</td>
-<td align="right">2.030424</td>
-<td align="right">0.6121958</td>
-</tr>
-<tr class="even">
-<td align="left">y4</td>
-<td align="right">8</td>
-<td align="right">11</td>
-<td align="right">7.500909</td>
-<td align="right">2.030578</td>
-<td align="right">0.6122425</td>
-</tr>
-</tbody>
-</table>
-<div id="anscombes-quartet-ploted" class="section level3">
-<h3>Anscombe’s Quartet Ploted</h3>
-<p><img src="1-3_diagnostics_files/figure-html/unnamed-chunk-8-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>One of the best diagnostic plots is the residuals vs. fit plot. You can draw the residuals vs. fit plot with the <code>plot()</code> function. But a much more attractive plot can be obtained using ggplot2, which is a part of the tidyverse. The tidyverse is a group, or “ecosystem” of R packages for cleaning and visualizing data. To use the tidyverse package, we need to install and load the package.</p>
+<p>The following code chunk test weather the tidyverse has been installed, installs the package if needed, and then loads the package. <code>install.packages()</code> command installs the package and the <code>library()</code> command loads the package. For now, you can copy this code and paste this code to use it in your own analysis.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="cf">if</span> (<span class="op">!</span><span class="kw">require</span>(<span class="st">&quot;tidyverse&quot;</span>)) <span class="kw">install.packages</span>(<span class="st">&quot;tidyverse&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>  <span class="kw">suppressMessages</span>(<span class="kw">library</span>(tidyverse))</span></code></pre></div>
+<p>I have written a function, <code>plot.fitted()</code>, that you can copy an past into you analysis. You simply pass the linear model you estimated to it. Thus, for <code>mod</code>, you can use the following code to draw the residual vs. fit plot.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="kw">plot.fitted</span>(mod1)</span></code></pre></div>
+<p><img src="1-3_diagnostics_files/figure-html/unnamed-chunk-10-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<div class="info-box note">
+<p>Notice the cornucopia shape of the scatter plot. This is further evidence that a linear model is not the best for this data.</p>
+</div>
+<div id="perfect-residuals-vs.-fit-plot" class="section level3">
+<h3>“Perfect” Residuals vs. Fit Plot</h3>
+<p>Here is an example of a residuals vs. fit plot that is nearly optimal. The data has been simulated to meet all the assumptions of linear regression.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="kw">plot.fitted</span>(mod2)</span></code></pre></div>
+<p><img src="1-3_diagnostics_files/figure-html/unnamed-chunk-11-1.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="residual-plot-function" class="section level2">
+<h2>Residual Plot Function</h2>
+<p>The following function takes the linear model object as an input and draws the residuals vs. fit plot. Do not worry if this function looks too complicated. Yo can simply cut and past it into your work.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>plot.fitted &lt;-<span class="st"> </span><span class="cf">function</span>(lmod) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>  df =<span class="st"> </span>lmod<span class="op">$</span>model</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a>  title =<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;Residuals vs. Fits (Dependent Variable: &quot;</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a>                <span class="kw">names</span>(df)[<span class="dv">1</span>],</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a>                <span class="st">&quot;)&quot;</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true"></a>                <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true"></a>  pr &lt;-<span class="st"> </span>df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">fitted</span>(lmod), <span class="dt">y =</span> <span class="kw">resid</span>(lmod))) <span class="op">+</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_ribbon</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> <span class="op">-</span><span class="kw">sigma</span>(lmod), <span class="dt">ymax =</span> <span class="kw">sigma</span>(lmod)),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true"></a>                <span class="dt">fill =</span> <span class="st">&quot;gray&quot;</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true"></a>                <span class="dt">alpha =</span> <span class="fl">.5</span>) <span class="op">+</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_ribbon</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> <span class="op">-</span><span class="kw">sigma</span>(lmod)<span class="op">*</span><span class="dv">2</span>, <span class="dt">ymax =</span> <span class="kw">sigma</span>(lmod)<span class="op">*</span><span class="dv">2</span>),</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true"></a>                <span class="dt">fill =</span> <span class="st">&quot;lightgray&quot;</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true"></a>                <span class="dt">alpha =</span> <span class="fl">.5</span>) <span class="op">+</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true"></a><span class="st">    </span><span class="kw">theme_classic</span>() <span class="op">+</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true"></a><span class="st">    </span><span class="kw">ggtitle</span>(title) <span class="op">+</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true"></a><span class="st">    </span><span class="kw">ylab</span>(<span class="st">&quot;Residules&quot;</span>) <span class="op">+</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true"></a><span class="st">    </span><span class="kw">xlab</span>(<span class="st">&quot;Fitted&quot;</span>) <span class="op">+</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true"></a><span class="st">    </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>,</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true"></a>               <span class="dt">linetype =</span> <span class="st">&quot;solid&quot;</span>,</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true"></a>               <span class="dt">color =</span> <span class="st">&quot;black&quot;</span>)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true"></a>  <span class="kw">return</span>(pr)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true"></a>}</span></code></pre></div>
+</div>
+<div id="you-try-1" class="section level2">
+<h2>You try</h2>
+<div data-datacamp-exercise="" data-height="400" data-encoded="true">
+eyJsYW5ndWFnZSI6InIiLCJwcmVfZXhlcmNpc2VfY29kZSI6ImxpYnJhcnkoZHBseXIpXG5saWJyYXJ5KGdncGxvdDIpXG5wbG90LmZpdHRlZCA8LSBmdW5jdGlvbihsbW9kKSB7XG4gIGRmID0gbG1vZCRtb2RlbFxuICB0aXRsZSA9IHBhc3RlKFwiUmVzaWR1YWxzIHZzLiBGaXRzIChEZXBlbmRlbnQgVmFyaWFibGU6IFwiLFxuICAgICAgICAgICAgICAgIG5hbWVzKGRmKVsxXSxcbiAgICAgICAgICAgICAgICBcIilcIixcbiAgICAgICAgICAgICAgICBzZXAgPSBcIlwiKVxuICBwciA8LSBkZiAlPiUgZ2dwbG90KGFlcyh4ID0gZml0dGVkKGxtb2QpLCB5ID0gcmVzaWQobG1vZCkpKSArXG4gICAgZ2VvbV9yaWJib24oYWVzKHltaW4gPSAtc2lnbWEobG1vZCksIHltYXggPSBzaWdtYShsbW9kKSksXG4gICAgICAgICAgICAgICAgZmlsbCA9IFwiZ3JheVwiLFxuICAgICAgICAgICAgICAgIGFscGhhID0gLjUpICtcbiAgICBnZW9tX3JpYmJvbihhZXMoeW1pbiA9IC1zaWdtYShsbW9kKSoyLCB5bWF4ID0gc2lnbWEobG1vZCkqMiksXG4gICAgICAgICAgICAgICAgZmlsbCA9IFwibGlnaHRncmF5XCIsXG4gICAgICAgICAgICAgICAgYWxwaGEgPSAuNSkgK1xuICAgIGdlb21fcG9pbnQoKSArXG4gICAgdGhlbWVfY2xhc3NpYygpICtcbiAgICBnZ3RpdGxlKHRpdGxlKSArXG4gICAgeWxhYihcIlJlc2lkdWxlc1wiKSArXG4gICAgeGxhYihcIkZpdHRlZFwiKSArXG4gICAgZ2VvbV9obGluZSh5aW50ZXJjZXB0ID0gMCxcbiAgICAgICAgICAgICAgIGxpbmV0eXBlID0gXCJzb2xpZFwiLFxuICAgICAgICAgICAgICAgY29sb3IgPSBcImJsYWNrXCIpXG4gIHJldHVybihwcilcbn1cbmZvb2QgPC0gcmVhZC5jc3YodXJsKFwiaHR0cDovL3RpbnkuY2MvcG9lLWRhdGEvZm9vZC5jc3ZcIikpXG5tb2QxIDwtIGxtKGZvb2RfZXhwIH4gaW5jb21lLCBkYXRhID0gZm9vZCkiLCJzYW1wbGUiOiIjIFVzZSBwbG90LmZpdHRlZCgpIHRvIGRyYXcgYSByZXNpZHVhbHMgdnMuIGZpdHRlZCBwbG90IGZvciBtb2QxICIsInNvbHV0aW9uIjoicGxvdC5maXR0ZWQobW9kMSkifQ==
 </div>
 </div>
 </div>
-<div id="summary-of-all-code" class="section level1 fixed-box">
-<h1 class="fixed-box">Summary of all code</h1>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="co"># Code</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a><span class="co">## Load Data</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a>food &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="kw">url</span>(<span class="st">&quot;http://tiny.cc/poe-data/food.csv&quot;</span>))</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true"></a><span class="co">## Estimate Model</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true"></a>mod1 &lt;-<span class="st"> </span><span class="kw">lm</span>(food_exp <span class="op">~</span><span class="st"> </span>income, <span class="dt">data =</span> food)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true"></a><span class="co">## Summarize model</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true"></a><span class="kw">summary</span>(mod1)</span></code></pre></div>
+<div id="normality-of-residuals" class="section level1 tabset fixed-height">
+<h1 class="tabset fixed-height">Normality of residuals</h1>
+<div id="lecture-2" class="section level2">
+<h2>Lecture</h2>
 </div>
-<div id="you-did-it" class="section level1 fixed-box">
-<h1 class="fixed-box">You did it!</h1>
-<p>In the next tutorial, we will learn about accessing Goodness-of-Fit. The next lesson is available here: <a href="https://logan-kelly.shinyapps.io/4-2_GoF/" class="uri">https://logan-kelly.shinyapps.io/4-2_GoF/</a></p>
-<p><img src="img/great-job-star-drawing.jpeg" style="width:75.0%" /></p>
+<div id="explanition-2" class="section level2">
+<h2>Explanition</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="kw">plot.normal</span>(mod1)</span></code></pre></div>
+<p><img src="1-3_diagnostics_files/figure-html/unnamed-chunk-16-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<div id="perfect-residuals-histogram" class="section level3">
+<h3>“Perfect” Residuals Histogram</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="kw">plot.normal</span>(mod2)</span></code></pre></div>
+<p><img src="1-3_diagnostics_files/figure-html/unnamed-chunk-17-1.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="normal-plot-function" class="section level2">
+<h2>Normal Plot Function</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a>plot.normal &lt;-<span class="st"> </span><span class="cf">function</span>(lmod) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a>  res &lt;-<span class="st"> </span><span class="kw">resid</span>(lmod)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a>  <span class="kw">hist</span>(res, <span class="dt">probability =</span> T)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a>  <span class="kw">curve</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a>    <span class="kw">dnorm</span>(x, <span class="dt">mean =</span> <span class="kw">mean</span>(res), <span class="dt">sd =</span> (<span class="kw">sd</span>(res))),</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true"></a>    <span class="dt">col =</span> <span class="st">&quot;darkblue&quot;</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true"></a>    <span class="dt">lwd =</span> <span class="dv">2</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true"></a>    <span class="dt">add =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true"></a>    <span class="dt">yaxt =</span> <span class="st">&quot;n&quot;</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true"></a>  )</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true"></a>}</span></code></pre></div>
+</div>
+<div id="you-try-2" class="section level2">
+<h2>You try</h2>
+<p>Instructions here</p>
+<div data-datacamp-exercise="" data-height="400" data-encoded="true">
+eyJsYW5ndWFnZSI6InIiLCJwcmVfZXhlcmNpc2VfY29kZSI6ImxpYnJhcnkoZHBseXIpXG5saWJyYXJ5KGdncGxvdDIpXG5cbnBsb3Qubm9ybWFsIDwtIGZ1bmN0aW9uKGxtb2QpIHtcbiAgcmVzIDwtIHJlc2lkKGxtb2QpXG4gIGhpc3QocmVzLCBwcm9iYWJpbGl0eSA9IFQpXG4gIGN1cnZlKFxuICAgIGRub3JtKHgsIG1lYW4gPSBtZWFuKHJlcyksIHNkID0gKHNkKHJlcykpKSxcbiAgICBjb2wgPSBcImRhcmtibHVlXCIsXG4gICAgbHdkID0gMixcbiAgICBhZGQgPSBUUlVFLFxuICAgIHlheHQgPSBcIm5cIlxuICApXG59XG5cbmZvb2QgPC0gcmVhZC5jc3YodXJsKFwiaHR0cDovL3RpbnkuY2MvcG9lLWRhdGEvZm9vZC5jc3ZcIikpXG5tb2QxIDwtIGxtKGZvb2RfZXhwIH4gaW5jb21lLCBkYXRhID0gZm9vZCkiLCJzYW1wbGUiOiIjIFVzZSBwbG90Lm5vcm1hbCgpIHRvIGRyYXcgYSByZXNpZHVhbHMgdnMuIGZpdHRlZCBwbG90IGZvciBtb2QxICIsInNvbHV0aW9uIjoicGxvdC5ub3JtYWwobW9kMSkifQ==
+</div>
+</div>
 </div>
 
 
