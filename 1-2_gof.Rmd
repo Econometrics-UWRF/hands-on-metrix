@@ -1,4 +1,5 @@
 ---
+title: "Goodness-of-Fit"
 output:
   html_document: 
     css: style.css

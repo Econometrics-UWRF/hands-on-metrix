@@ -1,4 +1,5 @@
 ---
+title: "Residuals diagnostics"
 output:
   html_document: 
     css: style.css
