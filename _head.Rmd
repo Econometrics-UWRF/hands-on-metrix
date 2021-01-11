@@ -1,0 +1,156 @@
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE, comment = "", out.width="90%",fig.asp=.56, fig.align = "center", message=FALSE)
+```
+
+```{r echo=F,message=F,warning=F,results='hide'}
+if (!require("tidyverse")) install.packages("tidyverse")
+  suppressMessages(library(tidyverse))
+  
+if (!require("Rmisc")) install.packages("Rmisc")
+  suppressMessages(library(Rmisc))
+  
+if (!require("PoEdata")) install.packages("PoEdata")
+  suppressMessages(library(PoEdata))
+
+if (!require("xtable")) install.packages("xtable")
+  suppressMessages(library(xtable))  
+  
+if (!require("printr")) install.packages("printr")
+  suppressMessages(library(printr))
+  
+if (!require("stargazer")) install.packages("stargazer")
+  suppressMessages(library(stargazer))
+  
+if (!require("DT")) install.packages("DT")
+  suppressMessages(library(DT)) 
+  
+if (!require("xfun")) install.packages("xfun")
+  suppressMessages(library(xfun))   
+  
+if (!require("psych")) install.packages("psych")
+  suppressMessages(library(psych))
+
+if (!require("lmtest")) install.packages("lmtest")
+  suppressMessages(library(lmtest))
+
+if (!require("sandwich")) install.packages("sandwich")
+  suppressMessages(library(sandwich))
+
+if (!require("PoEdata")) install.packages("PoEdata")
+  suppressMessages(library(PoEdata))
+
+if (!require("jtools")) install.packages("jtools")
+  suppressMessages(library(jtools))
+
+if (!require("tutorial")) install.packages("tutorial")
+  suppressMessages(library(tutorial))
+
+if (!require("testwhat")) install_github("datacamp/testwhat")
+  suppressMessages(library(testwhat))
+
+if (!require("praise")) install_github("gaborcsardi/praise")
+  suppressMessages(library(praise))  
+  
+tutorial::go_interactive(greedy = F, height = 400)
+
+# Functions 
+predict.prob <- function(lmod,
+                      new.data,
+                      alpha=0.05,
+                      alternative="greater",
+                      value)
+  {
+    prediction <- predict(lmod, 
+                          newdata = new.data,
+                          interval="predict",
+                          level =1-alpha,
+                          se.fit = T)
+    cv <- qt(p=alpha/2, df = prediction$df, lower.tail = FALSE)
+    se <- (prediction$fit[,"upr"] - prediction$fit[,"fit"])/cv
+    t.stat <- (value-prediction$fit[,"fit"])/se
+    ret = data.frame("value"=value,
+                     "prob"=pt(q=t.stat,
+                            df=prediction$df,
+                            lower.tail = (alternative=="less")),
+                     "alternative"=alternative,
+                     "fit"=prediction$fit[,"fit"],
+                     "upr"=prediction$fit[,"upr"],
+                     "lwr"=prediction$fit[,"lwr"],
+                     "df" = prediction$df,
+                     "cv" = cv,
+                     "se" = se,
+                     "t.stat" = t.stat
+                     )
+    return(ret)
+  }
+
+predict.plot <- function(prediction){
+  x=seq(-4,4,length=400)
+  y=dt(x, df=prediction$df)
+  t = ifelse((prediction$alternative=="less"),-1,1)  
+  x1=seq(t*4,prediction$t.stat,length=400)
+  y1=dt(x1, df=prediction$df)
+  plot(x,y,type="l", lwd=2, col="black")
+  polygon(c(4,prediction$t.stat,x1),c(0,y1,0),col="gray")
+  abline(v=0)
+}
+
+plot.fitted <- function(lmod) {
+  df = lmod$model
+  title = paste("Residuals vs. Fits (Dependent Variable: ",
+                names(df)[1],
+                ")",
+                sep = "")
+  pr <- df %>% ggplot(aes(x = fitted(lmod), y = resid(lmod))) +
+    geom_ribbon(aes(ymin = -sigma(lmod), ymax = sigma(lmod)),
+                fill = "gray",
+                alpha = .5) +
+    geom_ribbon(aes(ymin = -sigma(lmod) * 2, ymax = sigma(lmod) * 2),
+                fill = "lightgray",
+                alpha = .5) +
+    geom_point() +
+    theme_classic() +
+    ggtitle(title) +
+    ylab("Residules") +
+    xlab("Fitted") +
+    geom_hline(yintercept = 0,
+               linetype = "solid",
+               color = "black")
+  return(pr)  
+}  
+
+plot.normal <- function(lmod) {
+  res <- resid(lmod)
+  hist(res, probability = T)
+  curve(
+    dnorm(x, mean = mean(res), sd = (sd(res))),
+    col = "darkblue",
+    lwd = 2,
+    add = TRUE,
+    yaxt = "n"
+  )
+}
+
+```
+
+```{css zoom-lib-src, echo = FALSE}
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+```
+
+```{js zoom-jquery, echo = FALSE}
+ $(document).ready(function() {
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+    // onClick function for all plots (img's)
+    $('img:not(.zoomImg)').click(function() {
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+    });
+    // onClick function for zoomImg
+    $('img.zoomImg').click(function() {
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+    });
+  });
+```
+
+<script>var element =  $("div[class="book"]");element.classList.remove("with-summary");</script>

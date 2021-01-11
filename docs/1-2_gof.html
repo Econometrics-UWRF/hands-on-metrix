@@ -364,7 +364,6 @@ script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
 <script>var element =  $("div[class="book"]");element.classList.remove("with-summary");</script>
 <div id="introduction" class="section level1 fixed-box">
 <h1 class="fixed-box">Introduction</h1>
-<p>In this tutorial, we will assess Goodness-of-Fit via the coefficient of determination.</p>
 <div id="load-data-and-estimate-model" class="section level3">
 <h3>Load data and estimate model</h3>
 <p>For this tutorial, we will be using the <code>food</code> data from PoE that can be found at <a href="http://www.principlesofeconometrics.com/poe5/poe5data.html" class="uri">http://www.principlesofeconometrics.com/poe5/poe5data.html</a>. To make it easier to access this data, I have set up a shortened URL: <a href="http://tiny.cc/poe" class="uri">http://tiny.cc/poe</a> -data. Thus, to load <code>food.csv</code> into R, use the following URL: <a href="http://tiny.cc/poe-data/food.csv" class="uri">http://tiny.cc/poe-data/food.csv</a>. We use the following code to load the data and estimate the model we will use in this tutorial.</p>
@@ -376,12 +375,9 @@ script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
 <h1 class="tabset fixed-height">All about <span class="math inline">\(R^2\)</span></h1>
 <div id="lecture" class="section level2">
 <h2>Lecture</h2>
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/qPk0YEKhqB8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-</iframe>
 </div>
 <div id="explanition" class="section level2">
 <h2>Explanition</h2>
-<p>The coefficient of determination, <span class="math inline">\(R^2\)</span>, is defined as the proportion of the variance in <span class="math inline">\(y\)</span> that is explained by the regression and the total variation in <span class="math inline">\(y\)</span>. <span class="math inline">\(R^2\)</span> is displayed in the model summary and is labeled “Multiple R-squared” (see bellow).</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="kw">summary</span>(mod1)</span></code></pre></div>
 <pre><code>
 Call:
@@ -404,7 +400,6 @@ F-statistic: 23.79 on 1 and 38 DF,  p-value: 1.946e-05</code></pre>
 </div>
 <div id="you-try" class="section level2">
 <h2>You try</h2>
-<p>Regress <code>food_exp</code> on <code>income</code> and store the model in a object named <code>mod1</code>. Then use the summary function to determine <span class="math inline">\(R^2\)</span>.</p>
 <div data-datacamp-exercise="" data-height="400" data-encoded="true">
 eyJsYW5ndWFnZSI6InIiLCJzYW1wbGUiOiIjIGxvYWQgZGF0YSBpbnRvIGFuIG9iamVjdCBjYWxsZWQgZm9vZFxuXG5cbiMgUmVncmVzcyBgZm9vZF9leHBgIG9uIGBpbmNvbWVgIGFuZCBzdG9yZSB0aGUgbW9kZWwgaW4gYSBvYmplY3QgbmFtZWQgYG1vZDFgXG5cblxuIyBkaXNwbGF5IGEgc3VtbWFyeSBvZiB0aGUgbW9kZWwiLCJzb2x1dGlvbiI6IiMgbG9hZCBkYXRhIGludG8gYW4gb2JqZWN0IGNhbGxlZCBmb29kXG5mb29kIDwtIHJlYWQuY3N2KHVybChcImh0dHA6Ly90aW55LmNjL3BvZS1kYXRhL2Zvb2QuY3N2XCIpKVxuXG4jIFJlZ3Jlc3MgYGZvb2RfZXhwYCBvbiBgaW5jb21lYCBhbmQgc3RvcmUgdGhlIG1vZGVsIGluIGEgb2JqZWN0IG5hbWVkIGBtb2QxYFxubW9kMSA8LSBsbShmb29kX2V4cCB+IGluY29tZSwgZGF0YSA9IGZvb2QpXG5cbiMgZGlzcGxheSBhIHN1bW1hcnkgb2YgdGhlIG1vZGVsXG5zdW1tYXJ5KG1vZDEpIiwic2N0IjoiZXgoKSAlPiUgY2hlY2tfb3V0cHV0X2V4cHIoXCJzdW1tYXJ5KG1vZDEpXCIpXG5zdWNjZXNzX21zZyhwcmFpc2UoXCIke0V4Y2xhbWF0aW9ufSEgWW91IGRpZCBhICR7YWRqZWN0aXZlfSBqb2IhXCIpKSJ9
 </div>
@@ -417,106 +412,20 @@ eyJsYW5ndWFnZSI6InIiLCJzYW1wbGUiOiIjIGxvYWQgZGF0YSBpbnRvIGFuIG9iamVjdCBjYWxsZWQg
 </div>
 <div id="explanition-1" class="section level2">
 <h2>Explanition</h2>
-<p><span class="math inline">\(R^2\)</span> is neither the only measure of goodness-of-fit nor is it a sufficient measure. It is a usefully statistic, but it has it limitations. One of those limitations is that <span class="math inline">\(R^2\)</span> is increasing in the number of parameters in the model. So if you add an independent variable, <span class="math inline">\(R^2\)</span> will go up. Adjusted <span class="math inline">\(R^2\)</span> attempts to fix this by adding a penalty for adding lees statistical significant independent variables. As a result, adjusted <span class="math inline">\(R^2\)</span> is not a measure of goodness-of-fit, but rather a model selection criteria, but it is not a very good one.</p>
-<p>Moreover, <span class="math inline">\(R^2\)</span> is not a substitute for plotting the data as was shown a statistion named</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="kw">data</span>(<span class="st">&quot;anscombe&quot;</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="kw">describe</span>(anscombe, <span class="dt">skew =</span> F,<span class="dt">ranges =</span> F)</span></code></pre></div>
-<table>
-<thead>
-<tr class="header">
-<th align="left"></th>
-<th align="right">vars</th>
-<th align="right">n</th>
-<th align="right">mean</th>
-<th align="right">sd</th>
-<th align="right">se</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">x1</td>
-<td align="right">1</td>
-<td align="right">11</td>
-<td align="right">9.000000</td>
-<td align="right">3.316625</td>
-<td align="right">1.0000000</td>
-</tr>
-<tr class="even">
-<td align="left">x2</td>
-<td align="right">2</td>
-<td align="right">11</td>
-<td align="right">9.000000</td>
-<td align="right">3.316625</td>
-<td align="right">1.0000000</td>
-</tr>
-<tr class="odd">
-<td align="left">x3</td>
-<td align="right">3</td>
-<td align="right">11</td>
-<td align="right">9.000000</td>
-<td align="right">3.316625</td>
-<td align="right">1.0000000</td>
-</tr>
-<tr class="even">
-<td align="left">x4</td>
-<td align="right">4</td>
-<td align="right">11</td>
-<td align="right">9.000000</td>
-<td align="right">3.316625</td>
-<td align="right">1.0000000</td>
-</tr>
-<tr class="odd">
-<td align="left">y1</td>
-<td align="right">5</td>
-<td align="right">11</td>
-<td align="right">7.500909</td>
-<td align="right">2.031568</td>
-<td align="right">0.6125408</td>
-</tr>
-<tr class="even">
-<td align="left">y2</td>
-<td align="right">6</td>
-<td align="right">11</td>
-<td align="right">7.500909</td>
-<td align="right">2.031657</td>
-<td align="right">0.6125676</td>
-</tr>
-<tr class="odd">
-<td align="left">y3</td>
-<td align="right">7</td>
-<td align="right">11</td>
-<td align="right">7.500000</td>
-<td align="right">2.030424</td>
-<td align="right">0.6121958</td>
-</tr>
-<tr class="even">
-<td align="left">y4</td>
-<td align="right">8</td>
-<td align="right">11</td>
-<td align="right">7.500909</td>
-<td align="right">2.030578</td>
-<td align="right">0.6122425</td>
-</tr>
-</tbody>
-</table>
-<div id="anscombes-quartet-ploted" class="section level3">
-<h3>Anscombe’s Quartet Ploted</h3>
-<p><img src="1-2_gof_files/figure-html/unnamed-chunk-8-1.png" width="90%" style="display: block; margin: auto;" /></p>
-</div>
 </div>
 </div>
 <div id="summary-of-all-code" class="section level1 fixed-box">
 <h1 class="fixed-box">Summary of all code</h1>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="co"># Code</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a><span class="co">## Load Data</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a>food &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="kw">url</span>(<span class="st">&quot;http://tiny.cc/poe-data/food.csv&quot;</span>))</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true"></a><span class="co">## Estimate Model</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true"></a>mod1 &lt;-<span class="st"> </span><span class="kw">lm</span>(food_exp <span class="op">~</span><span class="st"> </span>income, <span class="dt">data =</span> food)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true"></a><span class="co">## Summarize model</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true"></a><span class="kw">summary</span>(mod1)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="co"># Code</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="co">## Load Data</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a>food &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="kw">url</span>(<span class="st">&quot;http://tiny.cc/poe-data/food.csv&quot;</span>))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a><span class="co">## Estimate Model</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a>mod1 &lt;-<span class="st"> </span><span class="kw">lm</span>(food_exp <span class="op">~</span><span class="st"> </span>income, <span class="dt">data =</span> food)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a><span class="co">## Summarize model</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true"></a><span class="kw">summary</span>(mod1)</span></code></pre></div>
 </div>
 <div id="you-did-it" class="section level1 fixed-box">
 <h1 class="fixed-box">You did it!</h1>
