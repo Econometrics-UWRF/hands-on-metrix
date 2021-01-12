@@ -20,6 +20,7 @@ link-citations: true
 
 # Introduction {.fixed-box}
 
+In this tutorial, we will assess Goodness-of-Fit via the coefficient of determination. 
 
 ### Load data and estimate model
 
@@ -35,10 +36,11 @@ mod1 <- lm(food_exp ~ income, data = food)
 
 ## Lecture
 
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/qPk0YEKhqB8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Explanition
 
-
+The coefficient of determination,  $R^2$, is defined as the proportion of the variance in  $y$  that is explained by the regression and the total variation in  $y$. $R^2$ is displayed in the model summary and is labeled "Multiple R-squared" (see bellow).
 
 ```{r, echo=T}
 summary(mod1)
@@ -46,6 +48,7 @@ summary(mod1)
 
 ## You try
 
+Regress `food_exp` on `income` and store the model in a object named `mod1`. Then use the summary function to determine $R^2$.
 
 
 ```{r tut=T, ex="EstModEX", type="sample-code"}
@@ -83,11 +86,45 @@ success_msg(praise("${Exclamation}! You did a ${adjective} job!"))
 
 ## Explanition
 
+$R^2$ is neither the only measure of goodness-of-fit nor is it a sufficient measure. It is a usefully statistic, but it has it limitations. One of those limitations is that $R^2$ is increasing in the number of parameters in the model. So if you add an independent variable, $R^2$ will go up. Adjusted $R^2$ attempts to fix this by adding a penalty for adding lees statistical significant independent variables. As a result, adjusted $R^2$ is not a measure of goodness-of-fit, but rather a model selection criteria, but it is not a very good one.
+
+Moreover, $R^2$ is not a substitute for plotting the data as was shown a statistion named  
 
 ```{r}
-
+data("anscombe")
+describe(anscombe, skew = F,ranges = F)
 ```
 
+### Anscombe's Quartet Ploted
+
+```{r echo=F}
+p1 <- anscombe %>% ggplot(aes(x=x1,y=y1)) +
+  geom_point() +
+  theme_classic() +
+  ggtitle("Plot 1") +
+  geom_smooth(method="lm")
+
+p2 <- anscombe %>% ggplot(aes(x=x2,y=y2)) +
+  geom_point() +
+  theme_classic() +
+  ggtitle("Plot 2") +
+  geom_smooth(method="lm")
+
+p3 <- anscombe %>% ggplot(aes(x=x3,y=y3)) +
+  geom_point() +
+  theme_classic() +
+  ggtitle("Plot 3") +
+  geom_smooth(method="lm")
+
+p4 <- anscombe %>% ggplot(aes(x=x4,y=y4)) +
+  geom_point() +
+  theme_classic() +
+  ggtitle("Plot 4") +
+  geom_smooth(method="lm")
+
+multiplot(p1, p2, p3, p4, cols=2)
+
+```
 
 
 
