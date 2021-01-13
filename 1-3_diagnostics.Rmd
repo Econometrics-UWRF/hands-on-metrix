@@ -23,8 +23,7 @@ In this tutorial, we will evaluate basic residual diagnostics of a model.
 
 ### Load data and estimate model
 
-For this tutorial, we will be using the `food` data from PoE that can be found at http://www.principlesofeconometrics.com/poe5/poe5data.html. To make it easier to access this data, I have set up a shortened URL: http://tiny.cc/poe
--data. Thus, to load `food.csv` into R, use the following URL: http://tiny.cc/poe-data/food.csv. We use the following code to load the data and estimate the model we will use in this tutorial.
+For this tutorial, we will be using the `food` data from PoE that can be found at http://www.principlesofeconometrics.com/poe5/poe5data.html. To make it easier to access this data, I have set up a shortened URL: http://tiny.cc/poe-data/. Thus, to load `food.csv` into R, use the following URL: http://tiny.cc/poe-data/food.csv. We use the following code to load the data and estimate the model we will use in this tutorial.
 
 ```{r, echo=T, results='hide'}
 food <- read.csv(url("http://tiny.cc/poe-data/food.csv"))
@@ -71,12 +70,13 @@ plot(y=mod2$fitted.values,x=y)
 abline(0,1)
 ```
 
-Note that the points form an even band above and below the $\hat{y}=y$ line.
-
+::: {.info-box .note}
+This plot is nearly ideal because the points form an even band above and below the $\hat{y}=y$ line.
+:::
 
 ## You try
 
-Instructions
+`mod1` has already been estimated. Use the `$` notation to access the fitted and actual values of fodd expenditure and then use the `plot()` and `abline()` function to draw an actual vs fitted plot.
 
 ```{r tut=T, ex="FitActualEX", type="pre-exercise-code"}
 food <- read.csv(url("http://tiny.cc/poe-data/food.csv"))
@@ -118,7 +118,7 @@ plot.fitted(mod1)
 ```
 
 ::: {.info-box .note}
-Notice the cornucopia shape of the scatter plot. This is further evidence that a linear model is not the best for this data. 
+Notice the funnel shape of the scatter plot. This is further evidence that a linear model is not the best for this data. 
 :::
 
 ### "Perfect" Residuals vs. Fit Plot
@@ -210,13 +210,15 @@ plot.fitted(mod1)
 
 ## Explanition
 
-
+The residuals from the regression model should have an approximately normal distribution. Linear regression is rather robust to violations of this assumption, so it is sufficient to examine a histogram of the residuals. I have written a function for you `plot.normal()` that draws a histogram of the residuals with a normal curve superimposed. The histogram of the residuals for the food expenditure model doesn't look too bad. 
 
 ```{r}
 plot.normal(mod1)
 ```
 
 ### "Perfect" Residuals Histogram
+
+Here is an example of a histogram of the residuals that is nearly optimal. The data has been simulated to meet all the assumptions of linear regression.
 
 ```{r}
 plot.normal(mod2)

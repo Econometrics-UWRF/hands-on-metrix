@@ -367,7 +367,7 @@ script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
 <p>In this tutorial, we will evaluate basic residual diagnostics of a model.</p>
 <div id="load-data-and-estimate-model" class="section level3">
 <h3>Load data and estimate model</h3>
-<p>For this tutorial, we will be using the <code>food</code> data from PoE that can be found at <a href="http://www.principlesofeconometrics.com/poe5/poe5data.html" class="uri">http://www.principlesofeconometrics.com/poe5/poe5data.html</a>. To make it easier to access this data, I have set up a shortened URL: <a href="http://tiny.cc/poe" class="uri">http://tiny.cc/poe</a> -data. Thus, to load <code>food.csv</code> into R, use the following URL: <a href="http://tiny.cc/poe-data/food.csv" class="uri">http://tiny.cc/poe-data/food.csv</a>. We use the following code to load the data and estimate the model we will use in this tutorial.</p>
+<p>For this tutorial, we will be using the <code>food</code> data from PoE that can be found at <a href="http://www.principlesofeconometrics.com/poe5/poe5data.html" class="uri">http://www.principlesofeconometrics.com/poe5/poe5data.html</a>. To make it easier to access this data, I have set up a shortened URL: <a href="http://tiny.cc/poe-data/" class="uri">http://tiny.cc/poe-data/</a>. Thus, to load <code>food.csv</code> into R, use the following URL: <a href="http://tiny.cc/poe-data/food.csv" class="uri">http://tiny.cc/poe-data/food.csv</a>. We use the following code to load the data and estimate the model we will use in this tutorial.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>food &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="kw">url</span>(<span class="st">&quot;http://tiny.cc/poe-data/food.csv&quot;</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>mod1 &lt;-<span class="st"> </span><span class="kw">lm</span>(food_exp <span class="op">~</span><span class="st"> </span>income, <span class="dt">data =</span> food)</span></code></pre></div>
 </div>
@@ -394,12 +394,14 @@ script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
 <h3>“Perfect” fitted and residual values</h3>
 <p>Here is an example of a actual vs fitted plot that is nearly optimal. The data has been simulated to meet all the assumptions of linear regression.</p>
 <p><img src="1-3_diagnostics_files/figure-html/unnamed-chunk-5-1.png" width="90%" style="display: block; margin: auto;" /></p>
-<p>Note that the points form an even band above and below the <span class="math inline">\(\hat{y}=y\)</span> line.</p>
+<div class="info-box note">
+<p>This plot is nearly ideal because the points form an even band above and below the <span class="math inline">\(\hat{y}=y\)</span> line.</p>
+</div>
 </div>
 </div>
 <div id="you-try" class="section level2">
 <h2>You try</h2>
-<p>Instructions</p>
+<p><code>mod1</code> has already been estimated. Use the <code>$</code> notation to access the fitted and actual values of fodd expenditure and then use the <code>plot()</code> and <code>abline()</code> function to draw an actual vs fitted plot.</p>
 <div data-datacamp-exercise="" data-height="400" data-encoded="true">
 eyJsYW5ndWFnZSI6InIiLCJwcmVfZXhlcmNpc2VfY29kZSI6ImZvb2QgPC0gcmVhZC5jc3YodXJsKFwiaHR0cDovL3RpbnkuY2MvcG9lLWRhdGEvZm9vZC5jc3ZcIikpXG5tb2QxIDwtIGxtKGZvb2RfZXhwIH4gaW5jb21lLCBkYXRhID0gZm9vZCkiLCJzYW1wbGUiOiIjICIsInNvbHV0aW9uIjoicGxvdCh4PWZvb2QkZm9vZF9leHAseT1tb2QxJGZpdHRlZC52YWx1ZXMpXG5hYmxpbmUoMCwxKSJ9
 </div>
@@ -420,7 +422,7 @@ eyJsYW5ndWFnZSI6InIiLCJwcmVfZXhlcmNpc2VfY29kZSI6ImZvb2QgPC0gcmVhZC5jc3YodXJsKFwi
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="kw">plot.fitted</span>(mod1)</span></code></pre></div>
 <p><img src="1-3_diagnostics_files/figure-html/unnamed-chunk-10-1.png" width="90%" style="display: block; margin: auto;" /></p>
 <div class="info-box note">
-<p>Notice the cornucopia shape of the scatter plot. This is further evidence that a linear model is not the best for this data.</p>
+<p>Notice the funnel shape of the scatter plot. This is further evidence that a linear model is not the best for this data.</p>
 </div>
 <div id="perfect-residuals-vs.-fit-plot" class="section level3">
 <h3>“Perfect” Residuals vs. Fit Plot</h3>
@@ -470,10 +472,12 @@ eyJsYW5ndWFnZSI6InIiLCJwcmVfZXhlcmNpc2VfY29kZSI6ImxpYnJhcnkoZHBseXIpXG5saWJyYXJ5
 </div>
 <div id="explanition-2" class="section level2">
 <h2>Explanition</h2>
+<p>The residuals from the regression model should have an approximately normal distribution. Linear regression is rather robust to violations of this assumption, so it is sufficient to examine a histogram of the residuals. I have written a function for you <code>plot.normal()</code> that draws a histogram of the residuals with a normal curve superimposed. The histogram of the residuals for the food expenditure model doesn’t look too bad.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="kw">plot.normal</span>(mod1)</span></code></pre></div>
 <p><img src="1-3_diagnostics_files/figure-html/unnamed-chunk-16-1.png" width="90%" style="display: block; margin: auto;" /></p>
 <div id="perfect-residuals-histogram" class="section level3">
 <h3>“Perfect” Residuals Histogram</h3>
+<p>Here is an example of a histogram of the residuals that is nearly optimal. The data has been simulated to meet all the assumptions of linear regression.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="kw">plot.normal</span>(mod2)</span></code></pre></div>
 <p><img src="1-3_diagnostics_files/figure-html/unnamed-chunk-17-1.png" width="90%" style="display: block; margin: auto;" /></p>
 </div>
