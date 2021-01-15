@@ -364,7 +364,7 @@ script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
 <script>var element =  $("div[class="book"]");element.classList.remove("with-summary");</script>
 <div id="introduction" class="section level1 fixed-box">
 <h1 class="fixed-box">Introduction</h1>
-<p>In this tutorial, we will evaluate basic residual diagnostics of a model.</p>
+<p>In this tutorial, we will evaluate basic nonlinear relationships model.</p>
 <div id="load-data-and-estimate-model" class="section level3">
 <h3>Load data and estimate model</h3>
 <p>For this tutorial, we will be using the <code>food</code> data from PoE that can be found at <a href="http://www.principlesofeconometrics.com/poe5/poe5data.html" class="uri">http://www.principlesofeconometrics.com/poe5/poe5data.html</a>. To make it easier to access this data, I have set up a shortened URL: <a href="http://tiny.cc/poe" class="uri">http://tiny.cc/poe</a> -data. Thus, to load <code>food.csv</code> into R, use the following URL: <a href="http://tiny.cc/poe-data/food.csv" class="uri">http://tiny.cc/poe-data/food.csv</a>. We use the following code to load the data and estimate the model we will use in this tutorial.</p>
@@ -372,15 +372,213 @@ script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>mod1 &lt;-<span class="st"> </span><span class="kw">lm</span>(food_exp <span class="op">~</span><span class="st"> </span>income, <span class="dt">data =</span> food)</span></code></pre></div>
 </div>
 </div>
-<div id="section-1" class="section level1 tabset fixed-height">
-<h1 class="tabset fixed-height">Section 1</h1>
+<div id="functional-forms" class="section level1 tabset fixed-height">
+<h1 class="tabset fixed-height">Functional Forms</h1>
 <div id="lecture" class="section level2">
+<h2>Lecture</h2>
+</div>
+<div id="explanation" class="section level2">
+<h2>Explanation</h2>
+<div id="some-basic-functional-forms" class="section level3">
+<h3>Some basic functional forms</h3>
+<p><img src="1-4_log_files/figure-html/unnamed-chunk-3-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>Above is a small sample of the functional forms that can be used to fit data. To determine the proper model, you need to consider the following:</p>
+<ol style="list-style-type: decimal">
+<li>the theoretical relationship between the variables</li>
+<li>the plots of the data</li>
+<li>the residual diagnostics</li>
+</ol>
+</div>
+<div id="common-functional-forms-used-in-regression" class="section level3">
+<h3>Common functional forms used in regression</h3>
+<p>In the table below, I have listed some common transformations applied to data and how thoes transformation effect the interpretaition of the regression coefficents.</p>
+<div id="Table1">
+<table>
+<caption>Coefficient Interpretation</caption>
+<colgroup>
+<col width="19%" />
+<col width="35%" />
+<col width="21%" />
+<col width="23%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Name</th>
+<th align="left">Function</th>
+<th align="left">Slope = <span class="math inline">\(\frac{{\delta y}}{{\delta x}}\)</span></th>
+<th align="left">Elasticity = <span class="math inline">\(\frac{{\% \Delta y}}{{\% \Delta x}}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Linear</td>
+<td align="left"><span class="math inline">\(y = {\beta_1} + {\beta_2}x + \varepsilon\)</span></td>
+<td align="left"><span class="math inline">\(\beta _2\)</span></td>
+<td align="left"><span class="math inline">\({\beta _2}\frac{x}{y}\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">Quadratic</td>
+<td align="left"><span class="math inline">\(y = {\beta _1} + {\beta _2}{x^2} + \varepsilon\)</span></td>
+<td align="left"><span class="math inline">\(2{\beta _2}x\)</span></td>
+<td align="left"><span class="math inline">\(2{\beta _2}x\frac{x}{y}\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Cubic</td>
+<td align="left"><span class="math inline">\(y = {\beta _1} + {\beta _2}{x^3} + \varepsilon\)</span></td>
+<td align="left"><span class="math inline">\(3{\beta _2}x^2\)</span></td>
+<td align="left"><span class="math inline">\(3{\beta _2}x^2\frac{x}{y}\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">Log-Log</td>
+<td align="left"><span class="math inline">\(\log (y) = {\beta _1} + {\beta _2}\log (x) + \varepsilon\)</span></td>
+<td align="left"><span class="math inline">\({\beta _2}\frac{y}{x}\)</span></td>
+<td align="left"><span class="math inline">\({\beta _2}\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">Log-Linear</td>
+<td align="left"><span class="math inline">\(\log (y) = {\beta _1} + {\beta _2}x + \varepsilon\)</span></td>
+<td align="left"><span class="math inline">\({\beta _2}y\)</span></td>
+<td align="left"><span class="math inline">\({\beta _2}x\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">Linear-Log</td>
+<td align="left"><span class="math inline">\(y = {\beta _1} + {\beta _2}\log (x) + \varepsilon\)</span></td>
+<td align="left"><span class="math inline">\({\beta _2}\frac{1}{x}\)</span></td>
+<td align="left"><span class="math inline">\({\beta _2}\frac{1}{y}\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="lets-try-some-example-regressions" class="section level3">
+<h3>Let’s try some example regressions</h3>
+<p><strong>Linear-Log Models</strong></p>
+<p>In linear-log models, the dependent variable <span class="math inline">\(y\)</span> is regressed on the natural log of the independent variables, i.e. <span class="math inline">\(y = {\beta _1} + {\beta _2}\log (x) + \varepsilon\)</span>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>mod2 &lt;-<span class="st"> </span><span class="kw">lm</span>(food_exp<span class="op">~</span><span class="kw">log</span>(income), <span class="dt">data=</span>food)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="kw">summary</span>(mod2)</span></code></pre></div>
+<pre><code>
+Call:
+lm(formula = food_exp ~ log(income), data = food)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-215.427  -51.666    2.186   47.819  241.548 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   -97.19      84.24  -1.154    0.256    
+log(income)   132.17      28.80   4.588 4.76e-05 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 91.57 on 38 degrees of freedom
+Multiple R-squared:  0.3565,    Adjusted R-squared:  0.3396 
+F-statistic: 21.05 on 1 and 38 DF,  p-value: 4.76e-05</code></pre>
+<p>We can use <code>ggplot()</code> to draw a scater plot of the data with the regression curve superimposed.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>food <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span>income, <span class="dt">y=</span>food_exp)) <span class="op">+</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span>lm, <span class="dt">formula=</span>y<span class="op">~</span><span class="kw">log</span>(x), <span class="dt">se=</span><span class="ot">TRUE</span>) <span class="op">+</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="st">  </span><span class="kw">theme_classic</span>() </span></code></pre></div>
+<p><img src="1-4_log_files/figure-html/unnamed-chunk-5-1.png" width="90%" style="display: block; margin: auto;" /> And we can use the <code>plot.fitted()</code> function we defined previously to draw the Residual vs. Fit Plot.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="kw">plot.fitted</span>(mod2)</span></code></pre></div>
+<p><img src="1-4_log_files/figure-html/unnamed-chunk-6-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<div class="info-box tip">
+<p>The the two plots above indicate that the linear log model is better than the a linear model, but the linear log model is certainly not perfect.</p>
+</div>
+<p><strong>More models with logs</strong></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>mod3 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(food_exp)<span class="op">~</span>income, <span class="dt">data=</span>food)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a><span class="kw">summary</span>(mod3)</span></code></pre></div>
+<pre><code>
+Call:
+lm(formula = log(food_exp) ~ income, data = food)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.05993 -0.18838  0.01555  0.26305  0.45933 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 4.780239   0.158959  30.072  &lt; 2e-16 ***
+income      0.040030   0.007665   5.222 6.62e-06 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.3278 on 38 degrees of freedom
+Multiple R-squared:  0.4178,    Adjusted R-squared:  0.4025 
+F-statistic: 27.27 on 1 and 38 DF,  p-value: 6.616e-06</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>food <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span>income, <span class="dt">y=</span><span class="kw">log</span>(food_exp))) <span class="op">+</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span>lm, <span class="dt">se=</span><span class="ot">TRUE</span>) <span class="op">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a><span class="st">  </span><span class="kw">theme_classic</span>()</span></code></pre></div>
+<p><img src="1-4_log_files/figure-html/unnamed-chunk-7-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a>mod4 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(food_exp)<span class="op">~</span><span class="kw">log</span>(income), <span class="dt">data=</span>food)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a><span class="kw">summary</span>(mod4)</span></code></pre></div>
+<pre><code>
+Call:
+lm(formula = log(food_exp) ~ log(income), data = food)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.04199 -0.15160  0.03017  0.24523  0.54810 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   3.9636     0.2944  13.464 4.84e-16 ***
+log(income)   0.5559     0.1007   5.522 2.57e-06 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.32 on 38 degrees of freedom
+Multiple R-squared:  0.4452,    Adjusted R-squared:  0.4306 
+F-statistic:  30.5 on 1 and 38 DF,  p-value: 2.573e-06</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a>food <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span><span class="kw">log</span>(income), <span class="dt">y=</span><span class="kw">log</span>(food_exp))) <span class="op">+</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span>lm, <span class="dt">se=</span><span class="ot">TRUE</span>) <span class="op">+</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a><span class="st">  </span><span class="kw">theme_classic</span>()</span></code></pre></div>
+<p><img src="1-4_log_files/figure-html/unnamed-chunk-8-1.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="you-try" class="section level2">
+<h2>You try</h2>
+<p>Estimate a log-linear model and store it in an object named <code>mod3</code>, plot income vs. log of food expenditure with the regression line superimposed, and draw the Residuals vs. Fitted Plot.</p>
+<div data-datacamp-exercise="" data-height="400" data-encoded="true">
+eyJsYW5ndWFnZSI6InIiLCJwcmVfZXhlcmNpc2VfY29kZSI6ImZvb2QgPC0gcmVhZC5jc3YodXJsKFwiaHR0cDovL3RpbnkuY2MvcG9lLWRhdGEvZm9vZC5jc3ZcIikpXG5saWJyYXJ5KGdncGxvdDIpXG5saWJyYXJ5KGRwbHlyKVxucGxvdC5maXR0ZWQgPC0gZnVuY3Rpb24obG1vZCkge1xuICBkZiA9IGxtb2QkbW9kZWxcbiAgdGl0bGUgPSBwYXN0ZShcIlJlc2lkdWFscyB2cy4gRml0cyAoRGVwZW5kZW50IFZhcmlhYmxlOiBcIixcbiAgICAgICAgICAgICAgICBuYW1lcyhkZilbMV0sXG4gICAgICAgICAgICAgICAgXCIpXCIsXG4gICAgICAgICAgICAgICAgc2VwID0gXCJcIilcbiAgcHIgPC0gZGYgJT4lIGdncGxvdChhZXMoeCA9IGZpdHRlZChsbW9kKSwgeSA9IHJlc2lkKGxtb2QpKSkgK1xuICAgIGdlb21fcmliYm9uKGFlcyh5bWluID0gLXNpZ21hKGxtb2QpLCB5bWF4ID0gc2lnbWEobG1vZCkpLFxuICAgICAgICAgICAgICAgIGZpbGwgPSBcImdyYXlcIixcbiAgICAgICAgICAgICAgICBhbHBoYSA9IC41KSArXG4gICAgZ2VvbV9yaWJib24oYWVzKHltaW4gPSAtc2lnbWEobG1vZCkgKiAyLCB5bWF4ID0gc2lnbWEobG1vZCkgKiAyKSxcbiAgICAgICAgICAgICAgICBmaWxsID0gXCJsaWdodGdyYXlcIixcbiAgICAgICAgICAgICAgICBhbHBoYSA9IC41KSArXG4gICAgZ2VvbV9wb2ludCgpICtcbiAgICB0aGVtZV9jbGFzc2ljKCkgK1xuICAgIGdndGl0bGUodGl0bGUpICtcbiAgICB5bGFiKFwiUmVzaWR1bGVzXCIpICtcbiAgICB4bGFiKFwiRml0dGVkXCIpICtcbiAgICBnZW9tX2hsaW5lKHlpbnRlcmNlcHQgPSAwLFxuICAgICAgICAgICAgICAgbGluZXR5cGUgPSBcInNvbGlkXCIsXG4gICAgICAgICAgICAgICBjb2xvciA9IFwiYmxhY2tcIilcbiAgcmV0dXJuKHByKSAgXG59ICAiLCJzYW1wbGUiOiIjIEVzdGltYXRlIGEgbG9nLWxpbmVhciBtb2RlbCBhbmQgc3RvcmUgaXQgaW4gYW4gb2JqZWN0IG5hbWVkIGBtb2QzYFxuXG5cblxuIyBQbG90IGluY29tZSB2cy4gbG9nIG9mIGZvb2QgZXhwZW5kaXR1cmUgd2l0aCB0aGUgcmVncmVzc2lvbiBsaW5lIHN1cGVyaW1wb3NlZFxuXG5cblxuIyBEcmF3IHRoZSBSZXNpZHVhbHMgdnMuIEZpdHRlZCBQbG90Iiwic29sdXRpb24iOiIjIEVzdGltYXRlIGEgbG9nLWxpbmVhciBtb2RlbCBhbmQgc3RvcmUgaXQgaW4gYW4gb2JqZWN0IG5hbWVkIGBtb2QzYFxubW9kMyA8LSBsbShsb2coZm9vZF9leHApfmluY29tZSwgZGF0YT1mb29kKVxuc3VtbWFyeShtb2QzKVxuIyBQbG90IGluY29tZSB2cy4gbG9nIG9mIGZvb2QgZXhwZW5kaXR1cmUgd2l0aCB0aGUgcmVncmVzc2lvbiBsaW5lIHN1cGVyaW1wb3NlZFxuZm9vZCAlPiUgZ2dwbG90KGFlcyh4PWluY29tZSwgeT1sb2coZm9vZF9leHApKSkgK1xuICBnZW9tX3BvaW50KCkgK1xuICBnZW9tX3Ntb290aChtZXRob2Q9bG0sIHNlPVRSVUUpICtcbiAgdGhlbWVfY2xhc3NpYygpXG4jIERyYXcgdGhlIFJlc2lkdWFscyB2cy4gRml0dGVkIFBsb3RcbnBsb3QuZml0dGVkKG1vZDMpIiwic2N0IjoidGVzdF9vYmplY3QoXCJtb2QzXCIpXG5zdWNjZXNzX21zZyhwcmFpc2UoXCIke0V4Y2xhbWF0aW9ufSEgWW91IGRpZCBhICR7YWRqZWN0aXZlfSBqb2IhXCIpKSJ9
+</div>
+</div>
+</div>
+<div id="residuals-vs.-fitted-plot" class="section level1 fixed-height">
+<h1 class="fixed-height">Residuals vs. Fitted Plot</h1>
+<div data-datacamp-exercise="" data-height="400" data-encoded="true">
+eyJsYW5ndWFnZSI6InIiLCJwcmVfZXhlcmNpc2VfY29kZSI6ImZvb2QgPC0gcmVhZC5jc3YodXJsKFwiaHR0cDovL3RpbnkuY2MvcG9lLWRhdGEvZm9vZC5jc3ZcIikpXG5saWJyYXJ5KGdncGxvdDIpXG5saWJyYXJ5KGRwbHlyKVxucGxvdC5maXR0ZWQgPC0gZnVuY3Rpb24obG1vZCkge1xuICBkZiA9IGxtb2QkbW9kZWxcbiAgdGl0bGUgPSBwYXN0ZShcIlJlc2lkdWFscyB2cy4gRml0cyAoRGVwZW5kZW50IFZhcmlhYmxlOiBcIixcbiAgICAgICAgICAgICAgICBuYW1lcyhkZilbMV0sXG4gICAgICAgICAgICAgICAgXCIpXCIsXG4gICAgICAgICAgICAgICAgc2VwID0gXCJcIilcbiAgcHIgPC0gZGYgJT4lIGdncGxvdChhZXMoeCA9IGZpdHRlZChsbW9kKSwgeSA9IHJlc2lkKGxtb2QpKSkgK1xuICAgIGdlb21fcmliYm9uKGFlcyh5bWluID0gLXNpZ21hKGxtb2QpLCB5bWF4ID0gc2lnbWEobG1vZCkpLFxuICAgICAgICAgICAgICAgIGZpbGwgPSBcImdyYXlcIixcbiAgICAgICAgICAgICAgICBhbHBoYSA9IC41KSArXG4gICAgZ2VvbV9yaWJib24oYWVzKHltaW4gPSAtc2lnbWEobG1vZCkgKiAyLCB5bWF4ID0gc2lnbWEobG1vZCkgKiAyKSxcbiAgICAgICAgICAgICAgICBmaWxsID0gXCJsaWdodGdyYXlcIixcbiAgICAgICAgICAgICAgICBhbHBoYSA9IC41KSArXG4gICAgZ2VvbV9wb2ludCgpICtcbiAgICB0aGVtZV9jbGFzc2ljKCkgK1xuICAgIGdndGl0bGUodGl0bGUpICtcbiAgICB5bGFiKFwiUmVzaWR1bGVzXCIpICtcbiAgICB4bGFiKFwiRml0dGVkXCIpICtcbiAgICBnZW9tX2hsaW5lKHlpbnRlcmNlcHQgPSAwLFxuICAgICAgICAgICAgICAgbGluZXR5cGUgPSBcInNvbGlkXCIsXG4gICAgICAgICAgICAgICBjb2xvciA9IFwiYmxhY2tcIilcbiAgcmV0dXJuKHByKSAgXG59ICAiLCJzYW1wbGUiOiIjIEVzdGltYXRlIGEgbG9nLWxpbmVhciBtb2RlbCBhbmQgc3RvcmUgaXQgaW4gYW4gb2JqZWN0IG5hbWVkIGBtb2QzYFxuXG5cblxuIyBQbG90IGluY29tZSB2cy4gbG9nIG9mIGZvb2QgZXhwZW5kaXR1cmUgd2l0aCB0aGUgcmVncmVzc2lvbiBsaW5lIHN1cGVyaW1wb3NlZFxuXG5cblxuIyBEcmF3IHRoZSBSZXNpZHVhbHMgdnMuIEZpdHRlZCBQbG90Iiwic29sdXRpb24iOiIjIEVzdGltYXRlIGEgbG9nLWxpbmVhciBtb2RlbCBhbmQgc3RvcmUgaXQgaW4gYW4gb2JqZWN0IG5hbWVkIGBtb2QzYFxubW9kMyA8LSBsbShsb2coZm9vZF9leHApfmluY29tZSwgZGF0YT1mb29kKVxuc3VtbWFyeShtb2QzKVxuIyBQbG90IGluY29tZSB2cy4gbG9nIG9mIGZvb2QgZXhwZW5kaXR1cmUgd2l0aCB0aGUgcmVncmVzc2lvbiBsaW5lIHN1cGVyaW1wb3NlZFxuZm9vZCAlPiUgZ2dwbG90KGFlcyh4PWluY29tZSwgeT1sb2coZm9vZF9leHApKSkgK1xuICBnZW9tX3BvaW50KCkgK1xuICBnZW9tX3Ntb290aChtZXRob2Q9bG0sIHNlPVRSVUUpICtcbiAgdGhlbWVfY2xhc3NpYygpXG4jIERyYXcgdGhlIFJlc2lkdWFscyB2cy4gRml0dGVkIFBsb3RcbnBsb3QuZml0dGVkKG1vZDMpIiwic2N0IjoidGVzdF9vYmplY3QoXCJtb2QzXCIpXG5zdWNjZXNzX21zZyhwcmFpc2UoXCIke0V4Y2xhbWF0aW9ufSEgWW91IGRpZCBhICR7YWRqZWN0aXZlfSBqb2IhXCIpKSJ9
+</div>
+</div>
+<div id="prediction" class="section level1 tabset fixed-height">
+<h1 class="tabset fixed-height">Prediction</h1>
+<div id="lecture-1" class="section level2">
 <h2>Lecture</h2>
 </div>
 <div id="explanition" class="section level2">
 <h2>Explanition</h2>
+<p>The log-linear model, <span class="math inline">\(\log(y) = \beta_1 + \beta_2 x\)</span>, has a logarithmic term on the left-hand side of the equation; thus, to predict <span class="math inline">\(y\)</span> a natural choice for prediction is</p>
+<p><span class="math display">\[\hat y = \exp \left[ {\log (y)} \right] = \exp \left( {{b_1} + {b_2}x} \right)\]</span> But this prediction is known to be biased. To correct for the bias, we can multiply <span class="math inline">\(\hat{y}\)</span> the following correction factor <span class="math inline">\(e^{\hat{\sigma}^2/2}\)</span>, so that <span class="math display">\[\hat{y}_c=\hat{y}e^{\hat{\sigma}^2/2}=\exp \left( {{b_1} + {b_2}x} + \hat{\sigma}^2/2 \right). \]</span> The following code calculates both the corrected and uncorrected prediction of food expenditure from the log-linear model.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>mod3 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(food_exp)<span class="op">~</span>income, <span class="dt">data=</span>food)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>b1 &lt;-<span class="st"> </span><span class="kw">coef</span>(mod3)[[<span class="dv">1</span>]]</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a>b2 &lt;-<span class="st"> </span><span class="kw">coef</span>(mod3)[[<span class="dv">2</span>]]</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true"></a>smod3&lt;-<span class="kw">summary</span>(mod3)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true"></a>sighat2 &lt;-<span class="st"> </span>smod3<span class="op">$</span>sigma<span class="op">^</span><span class="dv">2</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true"></a>yhat &lt;-<span class="st"> </span><span class="kw">exp</span>(b1<span class="op">+</span>b2<span class="op">*</span>food<span class="op">$</span>income)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true"></a>yhatc &lt;-<span class="st"> </span><span class="kw">exp</span>(b1<span class="op">+</span>b2<span class="op">*</span>food<span class="op">$</span>income <span class="op">+</span><span class="st"> </span>sighat2<span class="op">/</span><span class="dv">2</span>)</span></code></pre></div>
+<p>And we can quickly plot the model as follows.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a>food <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x=</span>income, <span class="dt">y=</span>food_exp)) <span class="op">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x=</span>income,<span class="dt">y=</span>yhat, <span class="dt">linetype=</span><span class="st">&quot;Yhat&quot;</span>, <span class="dt">color=</span><span class="st">&quot;Yhat&quot;</span>)) <span class="op">+</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x=</span>income,<span class="dt">y=</span>yhatc, <span class="dt">linetype=</span><span class="st">&quot;Yhatc&quot;</span>, <span class="dt">color=</span><span class="st">&quot;Yhatc&quot;</span>)) <span class="op">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true"></a><span class="st">  </span><span class="kw">theme_classic</span>()</span></code></pre></div>
+<p><img src="1-4_log_files/figure-html/unnamed-chunk-18-1.png" width="90%" style="display: block; margin: auto;" /></p>
 </div>
-<div id="you-try" class="section level2">
+<div id="you-try-1" class="section level2">
 <h2>You try</h2>
 <p>Instructions</p>
 <div data-datacamp-exercise="" data-height="400" data-encoded="true">
@@ -390,6 +588,29 @@ eyJsYW5ndWFnZSI6InIiLCJwcmVfZXhlcmNpc2VfY29kZSI6IiNmb29kIDwtIHJlYWQuY3N2KHVybChc
 </div>
 <div id="summary-of-all-code" class="section level1 fixed-box">
 <h1 class="fixed-box">Summary of all code</h1>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a>mod2 &lt;-<span class="st"> </span><span class="kw">lm</span>(food_exp<span class="op">~</span><span class="kw">log</span>(income), <span class="dt">data=</span>food)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a><span class="kw">summary</span>(mod2)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true"></a>food <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span>income, <span class="dt">y=</span>food_exp)) <span class="op">+</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span>lm, <span class="dt">formula=</span>y<span class="op">~</span><span class="kw">log</span>(x), <span class="dt">se=</span><span class="ot">TRUE</span>) <span class="op">+</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true"></a><span class="st">  </span><span class="kw">theme_classic</span>() </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true"></a><span class="kw">plot.fitted</span>(mod2)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true"></a>mod3 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(food_exp)<span class="op">~</span>income, <span class="dt">data=</span>food)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true"></a><span class="kw">summary</span>(mod3)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true"></a>food <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span>income, <span class="dt">y=</span><span class="kw">log</span>(food_exp))) <span class="op">+</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span>lm, <span class="dt">se=</span><span class="ot">TRUE</span>) <span class="op">+</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true"></a><span class="st">  </span><span class="kw">theme_classic</span>()</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true"></a></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true"></a>mod4 &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(food_exp)<span class="op">~</span><span class="kw">log</span>(income), <span class="dt">data=</span>food)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true"></a><span class="kw">summary</span>(mod4)</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true"></a>food <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span><span class="kw">log</span>(income), <span class="dt">y=</span><span class="kw">log</span>(food_exp))) <span class="op">+</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true"></a><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span>lm, <span class="dt">se=</span><span class="ot">TRUE</span>) <span class="op">+</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true"></a><span class="st">  </span><span class="kw">theme_classic</span>()</span></code></pre></div>
 </div>
 <div id="you-did-it" class="section level1 fixed-box">
 <h1 class="fixed-box">You did it!</h1>
